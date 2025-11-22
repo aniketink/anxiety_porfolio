@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+    const gardenEntries = await getCollection("garden");
+    return gardenEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={entry.data.title}>
+    <article class="max-w-3xl mx-auto pb-24 animate-fade-in">
+        <!-- Back Button -->
+        <a
+            href="/anxiety_porfolio/garden"
+            class="inline-block mb-10 font-mono text-xs text-secondary hover:text-primary transition-colors"
+        >
+            &larr; BACK TO GARDEN
+        </a>
+
+        <!-- Header -->
+        <header class="border-b border-border pb-10 mb-16">
+            <div class="flex gap-6 font-mono text-xs text-secondary mb-6">
+                <span>DATE: {entry.data.date}</span>
+                {
+                    entry.data.status && (
+                        <span class="uppercase">
+                            STATUS: {entry.data.status}
+                        </span>
+                    )
+                }
+            </div>
+            <h1
+                class="font-serif text-5xl md:text-6xl leading-none mb-8 text-primary"
+            >
+                {entry.data.title}
+            </h1>
+
+            <p class="text-secondary text-lg mb-8 leading-relaxed">
+                {entry.data.description}
+            </p>
+
+            {
+                entry.data.tags && (
+                    <div class="flex flex-wrap gap-2">
+                        {entry.data.tags.map((tag) => (
+                            <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary">
+                                #{tag}
+                            </span>
+                        ))}
+                    </div>
+                )
+            }
+        </header>
+
+        <!-- The Content -->
+        <div class="prose prose-invert prose-lg max-w-none">
+            <Content />
+        </div>
+    </article>
+</BaseLayout>
