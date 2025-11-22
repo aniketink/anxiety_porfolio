@@ -1,0 +1,45 @@
+backend:
+  name: github
+  repo: aniketink/anxiety_porfolio
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "projects"
+    label: "Projects"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
+      - {label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD"}
+      - {label: "Tags", name: "tags", widget: "list"}
+      - {label: "Status", name: "status", widget: "select", options: ["Active", "Completed", "Archived"]}
+      - {label: "Body", name: "body", widget: "markdown"}
+
+  - name: "garden"
+    label: "Garden Notes"
+    folder: "src/content/garden"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD"}
+      - {label: "Tags", name: "tags", widget: "list"}
+      - {label: "Body", name: "body", widget: "markdown"}
+
+  - name: "research"
+    label: "Research Papers"
+    folder: "src/content/research"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
+      - {label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD"}
+      - {label: "PDF File", name: "pdf", widget: "file"}
+      - {label: "Tags", name: "tags", widget: "list"}
+      - {label: "Body", name: "body", widget: "markdown"}
