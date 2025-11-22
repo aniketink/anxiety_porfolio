@@ -8,7 +8,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://aniket.ink', // Your custom domain
+  site: 'https://aniketink.github.io',
+  base: '/anxiety_porfolio',
 
   vite: {
     plugins: [tailwindcss()]
