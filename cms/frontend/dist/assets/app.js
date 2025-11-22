@@ -179,11 +179,10 @@ async function createNewContent(title) {
 
 // Toggle preview
 function togglePreview() {
-    previewMode = !previewMode;
-    document.getElementById('editorPane').style.display = previewMode ? 'none' : 'flex';
-    document.getElementById('previewPane').style.display = previewMode ? 'block' : 'none';
+    const previewPane = document.getElementById('previewPane');
+    previewPane.classList.toggle('hidden');
 
-    if (previewMode) {
+    if (!previewPane.classList.contains('hidden')) {
         updatePreview();
     }
 }
@@ -209,17 +208,37 @@ function updatePreview() {
 
 // Simple markdown renderer
 function simpleMarkdown(text) {
-    text = text.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-bold mb-4">$1</h1>');
-    text = text.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold mb-3 mt-6">$1</h2>');
-    text = text.replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold mb-2 mt-4">$1</h3>');
+    // Escape HTML
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Headers
+    text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+    // Bold and italic
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    text = text.replace(/`(.+?)`/g, '<code class="bg-gray-800 px-1 rounded">$1</code>');
-    text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
-    text = text.replace(/\n\n/g, '</p><p class="mb-4">');
-    text = text.replace(/<li>/g, '<ul class="list-disc ml-6 mb-4"><li>');
-    text = text.replace(/<\/li>\n(?!<li>)/g, '</li></ul>');
-    text = '<p class="mb-4">' + text + '</p>';
+
+    // Code blocks
+    text = text.replace(/```(\w+)?\n([\s\S]+?)```/g, '<pre><code>$2</code></pre>');
+
+    // Inline code
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Lists
+    text = text.replace(/^\* (.+)$/gm, '<li>$1</li>');
+    text = text.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+    // Paragraphs
+    text = text.split('\n\n').map(para => {
+        if (!para.match(/^<[hup]/)) {
+            return '<p>' + para + '</p>';
+        }
+        return para;
+    }).join('\n');
+
     return text;
 }
 
