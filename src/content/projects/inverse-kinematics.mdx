@@ -1,0 +1,43 @@
+---
+title: "Real Handwritten Test"
+description: "Testing the dark mode inversion engine."
+date: "2023-11-22"
+tags: ["TEST", "HANDWRITING"]
+status: "Building"
+---
+import Handwritten from '../../components/Handwritten.astro';
+import LabNote from '../../components/LabNote.astro';
+
+## The Derivation
+
+<LabNote>
+  <div slot="text">
+    <p>
+      We start by defining the geometric constraints of the robot arm. 
+      Because the servo rotates on the Z-axis, we can simplify the 
+      problem into a 2D planar calculation first.
+    </p>
+    <p>
+      As you can see in the diagram, the angle <strong>Theta-2</strong> 
+      is derived using the Law of Cosines on the triangle formed by 
+      Link 1 and Link 2.
+    </p>
+    <p>
+      This approach saves computational power compared to using 
+      transformation matrices for every single joint.
+    </p>
+  </div>
+
+  <div slot="visual">
+    <Handwritten 
+      src="/math-dark.png" 
+      invert={false} 
+      caption="Fig 1. My hand calculations for the Elbow Joint" 
+    />
+  </div>
+</LabNote>
+
+
+## Implementation details
+
+After deriving the formula, I realized that <Handwritten src="/notes.png" inline={true} invert={true} /> was actually zero in this specific configuration. This simplified the Python code significantly.

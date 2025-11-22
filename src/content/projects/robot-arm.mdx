@@ -1,0 +1,36 @@
+---
+title: "6-DOF Robot Arm Kinematics"
+description: "Solving inverse kinematics using Python and iPad sketches."
+date: "2023-11-22"
+tags: ["robotics", "math", "python"]
+status: "prototyping"
+---
+import Handwritten from '../../components/Handwritten.astro';
+
+## The Challenge
+
+I needed to calculate the joint angles for the end-effector to reach coordinate $(x, y, z)$. The standard geometric approach was getting messy.
+
+### Initial Thoughts
+
+I started by sketching the link lengths on my iPad.
+
+<Handwritten 
+  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Analytic_geometry_parabola.svg/1200px-Analytic_geometry_parabola.svg.png" 
+  alt="Sketch of robot arm geometry" 
+  caption="Figure 1: Rough calculation of the elbow joint angle (theta 2)" 
+/>
+
+*Note: The image above is just a placeholder from the internet, but notice how the 'Handwritten' component automatically inverted the colors to make it look like white chalk on a blackboard.*
+
+## The Code
+
+Once the math was settled, I implemented it in Python:
+
+```python
+import numpy as np
+
+def inverse_kinematics(x, y, z):
+    # Calculate base angle
+    theta1 = np.arctan2(y, x)
+    return theta1

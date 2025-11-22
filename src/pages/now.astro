@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Now">
+  <div class="max-w-2xl mx-auto pt-20 pb-32 animate-fade-in">
+    <h1 class="font-serif text-5xl mb-8 text-primary">Now</h1>
+    <p class="text-secondary mb-12 text-lg">
+      What I'm focused on at this exact moment. Inspired by <a href="https://nownownow.com/about" class="underline hover:text-primary">Derek Sivers</a>.
+    </p>
+
+    <div class="prose prose-invert">
+      <h3>Building</h3>
+      <ul class="list-disc pl-5 text-secondary mb-8">
+        <li>Refactoring this portfolio to be a true digital garden.</li>
+        <li>Prototyping a new 4-legged robot using ROS2.</li>
+      </ul>
+
+      <h3>Reading</h3>
+      <ul class="list-disc pl-5 text-secondary mb-8">
+        <li><em>Structure and Interpretation of Computer Programs</em> (Slowly...)</li>
+        <li><em>Dune Messiah</em> by Frank Herbert</li>
+      </ul>
+
+      <h3>Learning</h3>
+      <ul class="list-disc pl-5 text-secondary mb-8">
+        <li>Rust for embedded systems.</li>
+        <li>Advanced React patterns.</li>
+      </ul>
+      
+      <p class="text-xs text-secondary mt-12 pt-12 border-t border-border">
+        Last updated: November 2023
+      </p>
+    </div>
+  </div>
+</BaseLayout>

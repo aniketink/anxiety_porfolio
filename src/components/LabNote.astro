@@ -1,0 +1,53 @@
+---
+// src/components/LabNote.astro
+---
+
+<div class="lab-grid">
+  
+    <!-- LEFT COLUMN: The Text -->
+    <div class="lab-text prose">
+      <slot name="text" />
+    </div>
+  
+    <!-- RIGHT COLUMN: The Handwritten Note -->
+    <div class="lab-visual">
+      <slot name="visual" />
+    </div>
+  
+  </div>
+  
+  <style>
+    /* DESKTOP: 60% Text, 40% Image */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr; 
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 60px;
+      border-bottom: 1px dashed #333; /* Dashed line separator */
+      padding-bottom: 40px;
+    }
+  
+    .lab-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #ddd;
+    }
+  
+    .lab-visual {
+      position: sticky;
+      top: 100px; /* Sticks to top as you scroll long text */
+    }
+  
+    /* MOBILE: Stack them */
+    @media (max-width: 768px) {
+      .lab-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .lab-visual {
+        position: static;
+        order: -1; /* Put image ABOVE text on mobile? Remove this line if you want it below */
+      }
+    }
+  </style>

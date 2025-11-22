@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const books = [
+  { 
+    title: "Thinking, Fast and Slow", 
+    author: "Daniel Kahneman", 
+    rating: "★★★★★", 
+    note: "System 2 thinking is expensive. Changed how I debug code.", 
+    status: "Read"
+  },
+  { 
+    title: "Probabilistic Robotics", 
+    author: "Sebastian Thrun", 
+    rating: "★★★★☆", 
+    note: "Heavy math, but the Kalman Filter chapter is gold.", 
+    status: "Reading"
+  },
+  { 
+    title: "Steve Jobs", 
+    author: "Walter Isaacson", 
+    rating: "★★★★★", 
+    note: "Design is how it works, not just how it looks.", 
+    status: "Read"
+  }
+];
+---
+
+<BaseLayout title="Library">
+  
+  <div class="mb-16 pt-10 animate-fade-in">
+    <div class="font-mono text-xs text-secondary mb-6 tracking-wider">
+      /// LIBRARY_DATABASE
+    </div>
+    <h1 class="font-serif text-5xl mb-4 text-primary">The Bookshelf</h1>
+    <p class="text-secondary text-lg max-w-xl leading-relaxed">
+      Books that shaped my engineering philosophy.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+    {books.map(book => (
+      <div class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200 flex flex-col justify-between h-full">
+        <div>
+          <div class="flex justify-between mb-4">
+            <span class={`font-mono text-xs uppercase border px-2 py-1 rounded transition-colors ${book.status === 'Reading' ? 'border-yellow-500 text-yellow-500' : 'border-border text-secondary group-hover:border-secondary'}`}>
+              {book.status}
+            </span>
+            <span class="text-yellow-500">{book.rating}</span>
+          </div>
+          
+          <h3 class="font-serif text-2xl mb-2 text-primary">{book.title}</h3>
+          <p class="font-mono text-xs text-secondary mb-6">
+            by {book.author}
+          </p>
+          
+          <p class="text-secondary text-sm italic border-l-2 border-border pl-4 py-1">
+            "{book.note}"
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+</BaseLayout>

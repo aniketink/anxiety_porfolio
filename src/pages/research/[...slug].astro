@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const researchEntries = await getCollection('research');
+  return researchEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={entry.data.title}>
+  
+  <div class="max-w-[1800px] mx-auto px-6 pb-12 animate-fade-in">
+    
+    <!-- Back Button -->
+    <a href="/research" class="inline-block mt-8 mb-8 font-mono text-xs text-secondary hover:text-primary transition-colors">
+      &larr; BACK TO LAB
+    </a>
+
+    <!-- PDF Section (Top) -->
+    <div id="pdf-container" class="mb-12 transition-all duration-300 bg-background">
+      
+      <!-- Controls -->
+      <div class="flex justify-between items-center mb-4 bg-background/80 backdrop-blur py-2 z-10 rounded-lg border-b border-border">
+        <div class="flex gap-3 flex-wrap">
+          <button id="toggle-invert" class="text-xs font-mono border border-border px-3 py-1.5 rounded text-secondary hover:text-primary hover:border-primary transition-colors bg-surface">
+            [TOGGLE DARK MODE]
+          </button>
+          <button id="toggle-fullscreen" class="text-xs font-mono border border-border px-3 py-1.5 rounded text-secondary hover:text-primary hover:border-primary transition-colors bg-surface">
+            [MAXIMIZE]
+          </button>
+          <a href={entry.data.pdf} target="_blank" rel="noopener noreferrer" class="text-xs font-mono border border-border px-3 py-1.5 rounded text-secondary hover:text-primary hover:border-primary transition-colors bg-surface">
+            [OPEN ORIGINAL]
+          </a>
+        </div>
+        <span class="text-xs font-mono text-zinc-500 hidden sm:block">
+          *Interactive Viewer
+        </span>
+      </div>
+
+      <!-- Viewer -->
+      <div id="viewer-wrapper" class="w-full h-[80vh] bg-zinc-100 rounded-xl border border-border relative shadow-2xl transition-all duration-300">
+          <iframe 
+          id="pdf-frame"
+          src={`${entry.data.pdf}#view=FitH`} 
+          class="w-full h-full rounded-xl transition-all duration-300"
+          title="Research Paper PDF"
+          type="application/pdf"
+          scrolling="yes"
+        ></iframe>
+      </div>
+
+    </div>
+
+    <!-- Metadata & Content Section (Bottom) -->
+    <div class="max-w-4xl mx-auto">
+      <header class="border-b border-border pb-8 mb-8">
+        <div class="flex gap-6 font-mono text-xs text-secondary mb-6">
+          <span>DATE: {entry.data.date}</span>
+          <span class="uppercase">RESEARCH PAPER</span>
+        </div>
+        <h1 class="font-serif text-4xl md:text-5xl leading-tight mb-6 text-primary">{entry.data.title}</h1>
+        
+        <div class="flex flex-wrap gap-2">
+          {entry.data.tags.map(tag => (
+            <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary">#{tag}</span>
+          ))}
+        </div>
+      </header>
+
+      <div class="prose prose-invert prose-lg max-w-none">
+        <Content />
+      </div>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    const toggleBtn = document.getElementById('toggle-invert');
+    const fullscreenBtn = document.getElementById('toggle-fullscreen');
+    const pdfContainer = document.getElementById('pdf-container');
+    const viewerWrapper = document.getElementById('viewer-wrapper');
+    const pdfFrame = document.getElementById('pdf-frame');
+    
+    // Dark Mode Logic
+    const savedInvert = localStorage.getItem('pdf-invert');
+    if (savedInvert === 'true') {
+      pdfFrame.style.filter = 'invert(1) hue-rotate(180deg)';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      const currentFilter = pdfFrame.style.filter;
+      if (currentFilter.includes('invert')) {
+        pdfFrame.style.filter = 'none';
+        localStorage.setItem('pdf-invert', 'false');
+      } else {
+        pdfFrame.style.filter = 'invert(1) hue-rotate(180deg)';
+        localStorage.setItem('pdf-invert', 'true');
+      }
+    });
+
+    // Full Screen Logic
+    fullscreenBtn.addEventListener('click', () => {
+      if (pdfContainer.classList.contains('fixed')) {
+        // Minimize
+        pdfContainer.classList.remove('fixed', 'inset-0', 'z-50', 'h-screen', 'w-screen', 'p-6');
+        pdfContainer.classList.add('sticky', 'top-8');
+        viewerWrapper.classList.remove('h-full');
+        viewerWrapper.classList.add('h-[85vh]');
+        fullscreenBtn.innerText = '[MAXIMIZE]';
+        document.body.style.overflow = 'auto';
+      } else {
+        // Maximize
+        pdfContainer.classList.remove('sticky', 'top-8');
+        pdfContainer.classList.add('fixed', 'inset-0', 'z-50', 'h-screen', 'w-screen', 'p-6');
+        viewerWrapper.classList.remove('h-[85vh]');
+        viewerWrapper.classList.add('h-full');
+        fullscreenBtn.innerText = '[MINIMIZE]';
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  </script>
+
+</BaseLayout>

@@ -1,0 +1,52 @@
+---
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+import Search from '../../components/Search.jsx';
+
+const allProjects = await getCollection('projects');
+// Sort by date
+const sortedProjects = allProjects.sort((a, b) => 
+  new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+
+const searchList = sortedProjects.map(p => ({
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+  slug: p.slug,
+  collection: 'projects'
+}));
+---
+
+<BaseLayout title="Projects">
+  
+  <div class="mb-16 pt-10 animate-fade-in relative z-20">
+    <h1 class="font-serif text-5xl mb-4 text-primary">Project Archive</h1>
+    <p class="text-secondary text-lg max-w-xl leading-relaxed mb-8">A complete log of robots, code, and hardware experiments.</p>
+    
+    <Search client:load searchList={searchList} />
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up relative z-10" style="animation-delay: 0.1s;">
+    {sortedProjects.map((project) => (
+      <a href={`/projects/${project.slug}`} class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200">
+        <div class="flex justify-between mb-4">
+          <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary group-hover:border-secondary transition-colors">{project.data.status}</span>
+          <span class="font-mono text-xs text-secondary">
+            {project.data.date}
+          </span>
+        </div>
+        
+        <h3 class="font-serif text-2xl mb-3 text-primary">{project.data.title}</h3>
+        <p class="text-secondary text-sm mb-6 leading-relaxed">{project.data.description}</p>
+        
+        <div class="flex flex-wrap gap-2 font-mono text-xs text-secondary opacity-70">
+          {project.data.tags.map(tag => <span>#{tag}</span>)}
+        </div>
+      </a>
+    ))}
+  </div>
+
+</BaseLayout>

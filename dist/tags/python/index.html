@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.16.0"><!-- Canonical URL --><link rel="canonical" href="https://aniket.ink/tags/python/"><!-- Primary Meta Tags --><title>Tag: python</title><meta name="title" content="Tag: python"><meta name="description" content="Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://aniket.ink/tags/python/"><meta property="og:title" content="Tag: python"><meta property="og:description" content="Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process."><meta property="og:image" content="https://aniket.ink/og-image.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://aniket.ink/tags/python/"><meta property="twitter:title" content="Tag: python"><meta property="twitter:description" content="Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process."><meta property="twitter:image" content="https://aniket.ink/og-image.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.QW52Ox2j.js"></script><script>
+      // Theme Toggle Logic
+      const getTheme = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      };
+
+      const setTheme = (theme) => {
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+        window.localStorage.setItem('theme', theme);
+      };
+
+      // Set initial theme
+      setTheme(getTheme());
+
+      // Handle toggle click
+      const handleToggleClick = () => {
+        const element = document.documentElement;
+        element.classList.toggle("dark");
+        
+        const isDark = element.classList.contains("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      };
+
+      // Setup event listeners on every page load (handles View Transitions)
+      document.addEventListener('astro:page-load', () => {
+        const toggleBtn = document.getElementById("theme-toggle");
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", handleToggleClick);
+        }
+      });
+    </script><link rel="stylesheet" href="/_astro/bookshelf.BABJRKKr.css"></head> </html>

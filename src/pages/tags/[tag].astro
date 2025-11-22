@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allProjects = await getCollection('projects');
+  
+  // Extract all unique tags
+  const uniqueTags = [...new Set(allProjects.map((project) => project.data.tags).flat())];
+
+  return uniqueTags.map((tag) => {
+    const filteredProjects = allProjects.filter((project) => 
+      project.data.tags.includes(tag)
+    );
+    return {
+      params: { tag },
+      props: { projects: filteredProjects },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { projects } = Astro.props;
+---
+
+<BaseLayout title={`Tag: ${tag}`}>
+  <div class="pt-20 pb-32 animate-fade-in">
+    <div class="mb-6 font-mono text-xs text-secondary tracking-wider">
+      /// TAG_ARCHIVE
+    </div>
+    <h1 class="font-serif text-5xl mb-12 text-primary uppercase">#{tag}</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {projects.map((project) => (
+        <a href={`/projects/${project.slug}`} class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200">
+          <div class="flex justify-between mb-4">
+            <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary group-hover:border-secondary transition-colors">{project.data.status}</span>
+            <span class="font-mono text-xs text-secondary">
+              {project.data.date}
+            </span>
+          </div>
+          
+          <h3 class="font-serif text-2xl mb-3 text-primary">{project.data.title}</h3>
+          <p class="text-secondary text-sm mb-6 leading-relaxed">{project.data.description}</p>
+          
+          <div class="flex flex-wrap gap-2 font-mono text-xs text-secondary opacity-70">
+            {project.data.tags.map(t => <span>#{t}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

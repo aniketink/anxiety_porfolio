@@ -1,0 +1,46 @@
+---
+// FIX: Notice the ../../ to go back two folders
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Mock data for your garden notes
+const notes = [
+  { title: "PID Control Tuning", tags: ['CONTROL', 'MATH'], date: "Active", desc: "Visual guide to tuning PIDs without losing your mind." },
+  { title: "ROS2 vs ROS1 nodes", tags: ['ROS', 'CPP'], date: "2023", desc: "Key differences in node architecture and messaging." },
+  { title: "Kalman Filters", tags: ['MATH', 'ALGO'], date: "Seedling", desc: "Estimating states in noisy environments." },
+  { title: "PCB Layer Management", tags: ['HARDWARE', 'KICAD'], date: "2023", desc: "Best practices for 4-layer board signal routing." },
+];
+---
+
+<BaseLayout title="Digital Garden">
+  
+  <!-- GARDEN HEADER -->
+  <div class="mb-16 pt-10 animate-fade-in">
+    <div class="font-mono text-xs text-secondary mb-6 tracking-wider">
+      /// DIGITAL_GARDEN
+    </div>
+    <h1 class="font-serif text-5xl mb-4 text-primary">The Garden</h1>
+    <p class="text-secondary text-lg max-w-xl leading-relaxed">
+      A collection of raw notes, half-baked ideas, and reference sheets. Unlike projects, these are never "finished."
+    </p>
+  </div>
+
+  <!-- THE GRID OF BOXES -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+    {notes.map(note => (
+      <a href="#" class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200">
+        <div class="flex justify-between mb-4">
+          <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary group-hover:border-secondary transition-colors">NOTE</span>
+          <span class="font-mono text-xs text-secondary">{note.date}</span>
+        </div>
+        
+        <h3 class="font-serif text-2xl mb-3 text-primary">{note.title}</h3>
+        <p class="text-secondary text-sm mb-6 leading-relaxed">{note.desc}</p>
+        
+        <div class="flex flex-wrap gap-2 font-mono text-xs text-secondary opacity-70">
+          {note.tags.map(tag => <span>#{tag}</span>)}
+        </div>
+      </a>
+    ))}
+  </div>
+
+</BaseLayout>

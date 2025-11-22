@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.jsx';
+---
+
+<BaseLayout title="Contact">
+  <div class="max-w-2xl mx-auto pt-20 pb-32 animate-fade-in">
+    <div class="mb-6 font-mono text-xs text-secondary tracking-wider">
+      /// TRANSMISSION_UPLINK
+    </div>
+    <h1 class="font-serif text-5xl mb-8 text-primary">Contact</h1>
+    <p class="text-secondary mb-12 text-lg">
+      Have a project in mind? Want to discuss control theory? Send a transmission.
+    </p>
+
+    <ContactForm client:load />
+  </div>
+</BaseLayout>

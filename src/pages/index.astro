@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThreeScene from '../components/ThreeScene.jsx';
+import TechStack from '../components/TechStack.astro';
+---
+
+<BaseLayout title="Home">
+  
+  <!-- HERO SECTION -->
+  <section class="pt-20 pb-32 relative">
+    
+    <!-- <ThreeScene client:only="react" /> -->
+
+    <div class="mb-6 font-mono text-xs text-secondary tracking-wider relative z-10">
+      ● OPEN TO WORK
+    </div>
+
+    <h1 class="font-serif text-5xl md:text-6xl leading-tight mb-6 font-normal relative z-10">
+      <span class="block text-secondary italic text-xl md:text-2xl mb-4 font-sans">
+        I bridge the gap between
+      </span>
+      Abstract Code & <br> Kinetic Reality.
+    </h1>
+    
+    <p class="text-secondary text-lg max-w-xl mb-10 leading-relaxed relative z-10">
+      Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process.
+    </p>
+
+    <div class="flex gap-4 relative z-10">
+      <a href="/projects" class="px-8 py-3 rounded-full bg-primary text-background font-semibold hover:translate-y-[-2px] hover:opacity-90 transition-all duration-200">
+        View Projects
+      </a>
+      <a href="/garden" class="px-8 py-3 rounded-full border border-surface-hover text-primary hover:border-primary transition-colors duration-200">
+        Read Notes
+      </a>
+    </div>
+
+  </section>
+
+  <!-- TECH STACK -->
+  <TechStack />
+
+  <!-- ABOUT SECTION -->
+  <section class="mb-32 grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-slide-up">
+    <div class="relative">
+      <div class="aspect-square rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-500">
+        <img src="/images/profile.png" alt="Lord Anxiety" class="object-cover w-full h-full" style="object-position: 30% center;" />
+      </div>
+      <div class="absolute -bottom-6 -right-6 bg-surface border border-border p-4 rounded-xl shadow-xl hidden md:block">
+        <p class="font-mono text-xs text-secondary">CURRENTLY READING</p>
+        <p class="font-serif text-primary">"How to Stop Worrying"</p>
+      </div>
+    </div>
+    
+    <div>
+      <h2 class="font-serif text-4xl mb-6 text-primary">Beyond the Code</h2>
+      <div class="prose prose-invert text-secondary leading-relaxed">
+        <p class="mb-4">
+          I bridge the gap between abstract code and kinetic reality, mostly by convincing rocks to think.
+        </p>
+        <p class="mb-6">
+          I'm an engineer who thinks in systems—primarily because I am <strong>Lord Anxiety</strong>, and if I don't organize the chaos, the chaos organizes me. When I'm not debugging control loops or hyper-fixating on a single pixel, I'm likely over-caffeinating or documenting my battles with entropy.
+        </p>
+        <div class="flex gap-6 font-mono text-xs pt-4 border-t border-border">
+          <div>
+            <span class="block text-zinc-500 mb-1">LOCATION</span>
+            <span class="text-primary">Kolkata, India</span>
+          </div>
+          <div>
+            <span class="block text-zinc-500 mb-1">STATUS</span>
+            <span class="text-primary flex items-center gap-2">
+              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+              Not Available (Panic Mode)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="animate-slide-up" style="animation-delay: 0.2s;">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-end mb-8 pb-4 border-b border-border">
+      <h2 class="font-serif text-3xl">Selected Work</h2>
+      <a href="/projects" class="text-xs text-secondary font-mono hover:text-primary transition-colors">VIEW ALL &rarr;</a>
+    </div>
+    
+    <!-- Grid of Boxes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Card 1 -->
+      <a href="/projects" class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200">
+        <div class="flex justify-between mb-4">
+          <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary group-hover:border-secondary transition-colors">Robotics</span>
+          <span class="font-mono text-xs text-secondary">2023</span>
+        </div>
+        <h3 class="font-serif text-2xl mb-3 text-primary">6-DOF Robot Arm</h3>
+        <p class="text-secondary text-sm mb-6 leading-relaxed">
+          Inverse kinematics solver written in Python. Includes custom PCB design and servo control logic.
+        </p>
+        <div class="font-mono text-xs text-secondary opacity-70">
+          #PYTHON #HARDWARE
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="/garden" class="group block bg-surface border border-border rounded-2xl p-8 hover:-translate-y-1 hover:border-secondary hover:bg-surface-hover transition-all duration-200">
+        <div class="flex justify-between mb-4">
+          <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary group-hover:border-secondary transition-colors">Writing</span>
+          <span class="font-mono text-xs text-secondary">Active</span>
+        </div>
+        <h3 class="font-serif text-2xl mb-3 text-primary">The Digital Garden</h3>
+        <p class="text-secondary text-sm mb-6 leading-relaxed">
+          A living collection of notes. Topics include PID tuning, Kalman filters, and path planning algorithms.
+        </p>
+        <div class="font-mono text-xs text-secondary opacity-70">
+          #THEORY #CONTROL
+        </div>
+      </a>
+
+    </div>
+
+  </section>
+
+</BaseLayout>

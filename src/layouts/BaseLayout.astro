@@ -1,0 +1,46 @@
+---
+import '../styles/base.css';
+import SEO from '../components/SEO.astro';
+
+const { title, description, image } = Astro.props;
+---
+<html lang="en" class="scroll-smooth">
+  <head>
+    <SEO title={title} description={description} image={image} />
+  </head>
+  <body class="bg-background text-primary antialiased min-h-screen flex flex-col selection:bg-secondary selection:text-background">
+    
+    <!-- Grain Overlay -->
+    <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-[100] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+
+    <div class="fixed inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+    <div class="max-w-4xl mx-auto px-6 w-full flex-grow flex flex-col">
+     <!-- Navigation -->
+     <nav class="py-10 flex justify-between items-center">
+        <a href="/" class="font-bold text-lg tracking-wide text-white hover:text-zinc-200 transition-colors">ANIKET.INK</a>
+        
+        <div class="flex items-center gap-8 text-sm text-zinc-400">
+          <a href="/projects" class="hover:text-white transition-colors">Projects</a>
+          <a href="/research" class="hover:text-white transition-colors">Research</a>
+          <a href="/garden" class="hover:text-white transition-colors">Garden</a>
+          <a href="/bookshelf" class="hover:text-white transition-colors">Library</a>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="flex-grow">
+        <slot />
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-24 pb-12 text-zinc-400 text-xs flex justify-between items-center">
+        <p>&copy; 2023 System.OS</p>
+        <div class="flex gap-4">
+            <a href="/rss.xml" class="hover:text-zinc-50 transition-colors">RSS</a>
+            <a href="/sitemap-index.xml" class="hover:text-zinc-50 transition-colors">Sitemap</a>
+        </div>
+      </footer>
+    </div>
+
+  </body>
+</html>

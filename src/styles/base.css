@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-serif: 'Playfair Display', serif;
+    --font-hand: 'Patrick Hand', cursive;
+
+    --color-background: #09090b;
+    --color-surface: #18181b;
+    --color-surface-hover: #27272a;
+    --color-border: #27272a;
+    --color-primary: #fafafa;
+    --color-secondary: #a1a1aa;
+    --color-accent: #f4f4f5;
+
+    --animate-fade-in: fadeIn 0.5s ease-out forwards;
+    --animate-slide-up: slideUp 0.5s ease-out forwards;
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+@layer base {
+    body {
+        @apply bg-background text-primary font-sans antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-serif text-primary mt-12 mb-6;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    h3 {
+        @apply text-2xl;
+    }
+
+    p {
+        @apply mb-6 leading-relaxed text-secondary text-lg;
+    }
+
+    ul,
+    ol {
+        @apply mb-6 pl-5 text-secondary list-disc;
+    }
+
+    li {
+        @apply mb-2;
+    }
+
+    code {
+        @apply font-mono text-sm bg-surface border border-border px-1.5 py-0.5 rounded text-accent;
+    }
+
+    pre {
+        @apply bg-surface border border-border p-6 rounded-xl overflow-x-auto mb-8 text-sm;
+    }
+
+    blockquote {
+        @apply border-l-4 border-border pl-6 italic text-secondary my-8;
+    }
+
+    a {
+        @apply hover:text-primary transition-colors;
+    }
+
+    /* Custom marker font class */
+    .marker {
+        @apply font-hand text-2xl text-yellow-500 leading-none;
+    }
+}
+
+@layer components {
+    .prose {
+        @apply text-secondary;
+    }
+}

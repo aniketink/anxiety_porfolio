@@ -1,0 +1,17 @@
+---
+const technologies = [
+  "Python", "C++", "ROS", "React", "Astro", "TensorFlow", "OpenCV", "Docker", "Linux", "Git", "Arduino", "Raspberry Pi"
+];
+---
+
+<div class="w-full py-10 border-y border-border bg-surface/50 backdrop-blur-sm mb-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 items-center justify-items-center">
+      {technologies.map((tech) => (
+        <span class="text-xl md:text-2xl font-serif text-secondary opacity-70 hover:opacity-100 transition-opacity cursor-default text-center">
+          {tech}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>

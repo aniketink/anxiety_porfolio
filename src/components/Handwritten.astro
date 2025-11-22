@@ -1,0 +1,47 @@
+---
+const { src, alt, caption, invert = true, inline = false } = Astro.props;
+
+// Logic for Inversion
+const filters = invert 
+  ? "filter: invert(1) grayscale(1) contrast(1.2); mix-blend-mode: screen; opacity: 0.9;" 
+  : "border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);";
+
+// Logic for Layout (Block vs Inline)
+const layoutStyles = inline
+  ? "display: inline-block; vertical-align: middle; margin: 0 5px; height: 1.5em; width: auto;"
+  : "width: 100%; height: auto; display: block;";
+
+const containerClass = inline ? "inline-hw" : "hw-figure";
+---
+
+{inline ? (
+  // INLINE MODE (Tiny image inside text)
+  <img src={src} alt={alt} style={`${filters} ${layoutStyles}`} />
+) : (
+  // BLOCK MODE (Normal Figure)
+  <figure class="hw-figure">
+    <div class="hw-wrapper">
+      <img src={src} alt={alt} style={`${filters} ${layoutStyles}`} />
+    </div>
+    {caption && <figcaption class="hw-caption">// {caption}</figcaption>}
+  </figure>
+)}
+
+<style>
+  .hw-figure { margin: 0; width: 100%; }
+  
+  .hw-wrapper {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hw-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    margin-top: 10px;
+    text-align: left; /* Align caption to left for Lab Note look */
+  }
+</style>
