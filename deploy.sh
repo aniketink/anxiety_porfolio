@@ -19,6 +19,6 @@ git commit -m "deploy"
 
 # Push to the gh-pages branch
 # Using the remote URL from the parent repo would be better, but hardcoding for now based on previous context
-git push -f https://github.com/aniketink/anxiety_porfolio.git gh-pages
+git push -f https://github.com/aniketink/aniketink.github.io.git gh-pages
 
 cd -
