@@ -5,15 +5,19 @@ interface Props {
   image?: string;
 }
 
-const { title, description = "Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process.", image = "/og-image.png" } = Astro.props;
-const siteURL = Astro.site ? Astro.site.href : 'https://aniket.ink';
+const {
+  title,
+  description = "Mechatronics Engineer. I design autonomous systems, write embedded firmware, and document the engineering process.",
+  image = "/og-image.png",
+} = Astro.props;
+const siteURL = Astro.site ? Astro.site.href : "https://aniket.ink";
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href="/anxiety_porfolio/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Canonical URL -->
