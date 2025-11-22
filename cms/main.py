@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 import json
 from typing import List
-from models import Project, GardenNote, ResearchPaper, ContentMetadata
+from models import ContentMetadata
 from git_manager import GitManager
 from content_parser import ContentParser
 from datetime import datetime
@@ -22,17 +22,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Get the directory where this script is located
+SCRIPT_DIR = Path(__file__).parent
+CONFIG_PATH = SCRIPT_DIR / "config.json"
+
 # Load config
-with open("config.json") as f:
+with open(CONFIG_PATH) as f:
     config = json.load(f)
 
 # Initialize managers
-git_manager = GitManager()
+git_manager = GitManager(str(SCRIPT_DIR.parent))
 parser = ContentParser()
 
 # Get content directories
 CONTENT_DIRS = config["content_dirs"]
-BASE_PATH = Path("..")
+BASE_PATH = SCRIPT_DIR.parent  # Parent of cms directory
 
 
 def get_content_path(content_type: str) -> Path:
@@ -59,12 +63,12 @@ def read_content_file(path: Path) -> dict:
     }
 
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {"message": "Portfolio CMS API", "version": "1.0.0"}
 
 
-@app.get("/content/{content_type}")
+@app.get("/api/content/{content_type}")
 async def list_content(content_type: str):
     """List all content of a specific type"""
     if content_type not in CONTENT_DIRS:
@@ -88,7 +92,7 @@ async def list_content(content_type: str):
     return content_list
 
 
-@app.get("/content/{content_type}/{filename}")
+@app.get("/api/content/{content_type}/{filename}")
 async def get_content(content_type: str, filename: str):
     """Get specific content file"""
     if content_type not in CONTENT_DIRS:
@@ -106,7 +110,7 @@ async def get_content(content_type: str, filename: str):
     return read_content_file(file_path)
 
 
-@app.post("/content/{content_type}")
+@app.post("/api/content/{content_type}")
 async def create_content(content_type: str, title: str, body: str, metadata: dict):
     """Create new content"""
     if content_type not in CONTENT_DIRS:
@@ -116,7 +120,7 @@ async def create_content(content_type: str, title: str, body: str, metadata: dic
     content_path.mkdir(parents=True, exist_ok=True)
     
     # Generate filename from title
-    filename = title.lower().replace(" ", "-") .replace("/", "-")
+    filename = title.lower().replace(" ", "-").replace("/", "-")
     filename = "".join(c for c in filename if c.isalnum() or c == "-")
     file_path = content_path / f"{filename}.md"
     
@@ -139,7 +143,7 @@ async def create_content(content_type: str, title: str, body: str, metadata: dic
     return {"success": True, "filename": filename}
 
 
-@app.put("/content/{content_type}/{filename}")
+@app.put("/api/content/{content_type}/{filename}")
 async def update_content(content_type: str, filename: str, body: str, metadata: dict):
     """Update existing content"""
     if content_type not in CONTENT_DIRS:
@@ -173,7 +177,7 @@ async def update_content(content_type: str, filename: str, body: str, metadata: 
     return {"success": True}
 
 
-@app.delete("/content/{content_type}/{filename}")
+@app.delete("/api/content/{content_type}/{filename}")
 async def delete_content(content_type: str, filename: str):
     """Delete content"""
     if content_type not in CONTENT_DIRS:
@@ -198,20 +202,20 @@ async def delete_content(content_type: str, filename: str):
     return {"success": True}
 
 
-@app.get("/git/status")
+@app.get("/api/git/status")
 async def git_status():
     """Get git status"""
     return git_manager.get_status()
 
 
-@app.get("/git/history/{content_type}/{filename}")
+@app.get("/api/git/history/{content_type}/{filename}")
 async def git_history(content_type: str, filename: str):
     """Get file commit history"""
     file_path = f"{CONTENT_DIRS[content_type]}/{filename}.md"
     return git_manager.get_file_history(file_path)
 
 
-@app.get("/search")
+@app.get("/api/search")
 async def search(query: str):
     """Search across all content"""
     results = []
@@ -238,7 +242,8 @@ async def search(query: str):
 
 
 # Serve frontend
-app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
+FRONTEND_PATH = SCRIPT_DIR / "frontend" / "dist"
+app.mount("/", StaticFiles(directory=str(FRONTEND_PATH), html=True), name="frontend")
 
 
 if __name__ == "__main__":

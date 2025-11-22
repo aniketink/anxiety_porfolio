@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://localhost:8000/api';
 let currentType = 'projects';
 let currentFile = null;
 let previewMode = false;
