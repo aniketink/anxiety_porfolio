@@ -1,0 +1,20 @@
+{
+    "content_dirs": {
+        "projects": "src/content/projects",
+        "garden": "src/content/garden",
+        "research": "src/content/research"
+    },
+    "git": {
+        "auto_commit": true,
+        "commit_message_template": "Update {type}: {title}"
+    },
+    "ui": {
+        "theme": "dark",
+        "editor_font_size": 14,
+        "preview_width": "50%"
+    },
+    "server": {
+        "host": "localhost",
+        "port": 8000
+    }
+}
