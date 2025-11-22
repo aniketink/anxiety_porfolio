@@ -32,15 +32,15 @@ async function loadContent(type) {
 
         content.forEach(item => {
             const div = document.createElement('div');
-            div.className = 'p-3 mb-2 rounded hover:bg-border-dark cursor-pointer transition-colors border border-transparent hover:border-blue-500';
+            div.className = 'p-4 rounded-lg hover:bg-surface-hover cursor-pointer transition-all content-card border border-transparent hover:border-border';
             div.onclick = () => loadFile(type, item.filename);
 
             div.innerHTML = `
-                <div class="font-medium text-sm">${item.metadata.title || item.filename}</div>
-                <div class="text-xs text-gray-500 mt-1">${formatDate(item.modified)}</div>
-                ${item.metadata.tags ? `<div class="flex flex-wrap gap-1 mt-2">
+                <div class="font-medium text-sm mb-1">${item.metadata.title || item.filename}</div>
+                <div class="text-xs text-secondary font-mono">${formatDate(item.modified)}</div>
+                ${item.metadata.tags ? `<div class="flex flex-wrap gap-1.5 mt-2.5">
                     ${item.metadata.tags.map(tag =>
-                `<span class="text-xs px-2 py-0.5 bg-blue-900/30 text-blue-400 rounded">${tag}</span>`
+                `<span class="text-xs px-2 py-0.5 bg-secondary/10 text-secondary rounded-md font-mono">${tag}</span>`
             ).join('')}
                 </div>` : ''}
             `;
@@ -264,12 +264,16 @@ function formatDate(isoString) {
 
 function showNotification(message, type) {
     const notification = document.createElement('div');
-    notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-600' : 'bg-red-600'
-        } text-white z-50 animate-fade-in`;
+    notification.className = `fixed bottom-6 right-6 px-5 py-3 rounded-lg shadow-2xl ${type === 'success' ? 'bg-white text-background' : 'bg-red-600 text-white'
+        } z-50 font-medium text-sm border ${type === 'success' ? 'border-border' : 'border-red-700'}`;
     notification.textContent = message;
     document.body.appendChild(notification);
 
-    setTimeout(() => notification.remove(), 3000);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(10px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // Auto-save draft every 30 seconds

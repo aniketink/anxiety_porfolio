@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,124 +9,174 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        'bg-dark': '#0a0a0a',
-                        'surface-dark': '#1a1a1a',
-                        'border-dark': '#2a2a2a',
+                        background: '#0a0a0a',
+                        surface: '#1a1a1a',
+                        'surface-hover': '#252525',
+                        border: '#2a2a2a',
+                        primary: '#e4e4e7',
+                        secondary: '#a1a1aa',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .latex-inline, .latex-block { color: #60a5fa; }
-        #editor { font-family: 'JetBrains Mono', monospace; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .grain-overlay {
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+            opacity: 0.03;
+            mix-blend-mode: overlay;
+        }
+
+        #editor {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .content-card {
+            transition: all 0.2s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+        }
     </style>
 </head>
-<body class="bg-bg-dark text-gray-100 min-h-screen">
+
+<body class="bg-background text-primary min-h-screen antialiased selection:bg-secondary selection:text-background">
+    <!-- Grain overlay -->
+    <div class="fixed inset-0 pointer-events-none z-[100] grain-overlay"></div>
+
+    <!-- Grid background -->
+    <div
+        class="fixed inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
+    </div>
+
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="w-64 bg-surface-dark border-r border-border-dark flex flex-col">
-            <div class="p-4 border-b border-border-dark">
-                <h1 class="text-xl font-bold">Portfolio CMS</h1>
-                <p class="text-xs text-gray-500 mt-1">Offline Content Manager</p>
+        <div class="w-64 bg-surface border-r border-border flex flex-col">
+            <div class="p-6 border-b border-border">
+                <h1 class="font-bold text-xl tracking-wide text-white">ANIKET.INK</h1>
+                <p class="text-xs text-secondary mt-1 tracking-wider font-mono">CMS</p>
             </div>
-            
-            <nav class="flex-1 p-4 space-y-2">
-                <button onclick="switchType('projects')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
-                    📁 Projects
+
+            <nav class="flex-1 p-4 space-y-1">
+                <button onclick="switchType('projects')"
+                    class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-surface-hover transition-colors text-sm font-medium">
+                    <span class="text-secondary mr-2">📁</span> Projects
                 </button>
-                <button onclick="switchType('garden')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
-                    🌱 Garden Notes
+                <button onclick="switchType('garden')"
+                    class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-surface-hover transition-colors text-sm font-medium">
+                    <span class="text-secondary mr-2">🌱</span> Garden
                 </button>
-                <button onclick="switchType('research')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
-                    🔬 Research
+                <button onclick="switchType('research')"
+                    class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-surface-hover transition-colors text-sm font-medium">
+                    <span class="text-secondary mr-2">🔬</span> Research
                 </button>
             </nav>
-            
-            <div class="p-4 border-t border-border-dark">
-                <button onclick="newContent()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">
+
+            <div class="p-4 border-t border-border">
+                <button onclick="newContent()"
+                    class="w-full bg-white hover:bg-zinc-200 text-background px-4 py-2.5 rounded-lg transition-colors font-medium text-sm">
                     + New Content
                 </button>
             </div>
         </div>
 
         <!-- Content List -->
-        <div class="w-80 bg-surface-dark border-r border-border-dark flex flex-col">
-            <div class="p-4 border-b border-border-dark">
-                <input 
-                    type="text" 
-                    id="searchInput"
-                    placeholder="Search..."
-                    onkeyup="searchContent()"
-                    class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-                >
+        <div class="w-96 bg-surface border-r border-border flex flex-col">
+            <div class="p-4 border-b border-border">
+                <input type="text" id="searchInput" placeholder="Search content..." onkeyup="searchContent()"
+                    class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors placeholder-secondary">
             </div>
-            
-            <div id="contentList" class="flex-1 overflow-y-auto p-2">
-                <!-- Content items will be loaded here -->
+
+            <div id="contentList" class="flex-1 overflow-y-auto p-3 space-y-2">
+                <div class="text-center text-secondary text-sm py-8">Loading...</div>
             </div>
         </div>
 
         <!-- Editor -->
         <div class="flex-1 flex flex-col">
-            <div class="p-4 border-b border-border-dark flex justify-between items-center">
-                <div id="editorTitle" class="text-lg font-semibold">Select or create content</div>
+            <div class="p-4 border-b border-border flex justify-between items-center bg-surface/50 backdrop-blur">
+                <div id="editorTitle" class="text-lg font-semibold tracking-wide">Select or create content</div>
                 <div class="flex gap-2">
-                    <button onclick="saveContent()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors text-sm">
-                        💾 Save
+                    <button onclick="saveContent()"
+                        class="bg-white hover:bg-zinc-200 text-background px-5 py-2 rounded-lg transition-colors text-sm font-medium">
+                        Save & Commit
                     </button>
-                    <button onclick="togglePreview()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors text-sm">
-                        👁 Preview
+                    <button onclick="togglePreview()"
+                        class="bg-surface-hover hover:bg-border text-primary px-5 py-2 rounded-lg transition-colors text-sm font-medium">
+                        Preview
                     </button>
                 </div>
             </div>
-            
-            <div class="flex-1 flex">
-                <!-- Metadata Sidebar -->
-                <div id="metadataPanel" class="w-64 bg-surface-dark border-r border-border-dark p-4 space-y-4 overflow-y-auto">
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Metadata Panel -->
+                <div id="metadataPanel" class="w-80 bg-surface border-r border-border p-6 space-y-5 overflow-y-auto">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Title</label>
-                        <input type="text" id="titleInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium mb-2 text-secondary">Title</label>
+                        <input type="text" id="titleInput"
+                            class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Description</label>
-                        <textarea id="descriptionInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm" rows="3"></textarea>
+                        <label class="block text-sm font-medium mb-2 text-secondary">Description</label>
+                        <textarea id="descriptionInput"
+                            class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors resize-none"
+                            rows="3"></textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Date</label>
-                        <input type="date" id="dateInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium mb-2 text-secondary">Date</label>
+                        <input type="date" id="dateInput"
+                            class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Tags (comma separated)</label>
-                        <input type="text" id="tagsInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium mb-2 text-secondary">Tags <span class="text-xs">(comma
+                                separated)</span></label>
+                        <input type="text" id="tagsInput" placeholder="robotics, python, test"
+                            class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors placeholder-secondary/50">
                     </div>
                     <div id="statusField" style="display:none;">
-                        <label class="block text-sm font-medium mb-1">Status</label>
-                        <select id="statusInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium mb-2 text-secondary">Status</label>
+                        <select id="statusInput"
+                            class="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-secondary transition-colors">
                             <option>Active</option>
                             <option>Completed</option>
                             <option>Archived</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <!-- Editor/Preview -->
-                <div class="flex-1 flex">
+                <div class="flex-1 flex overflow-hidden">
                     <div id="editorPane" class="flex-1 flex flex-col">
-                        <textarea 
-                            id="editor" 
-                            class="flex-1 bg-bg-dark p-6 text-sm resize-none focus:outline-none"
-                            placeholder="Start writing... Use [[links]] for backlinks and $...$ for LaTeX"
-                        ></textarea>
+                        <textarea id="editor"
+                            class="flex-1 bg-background p-8 resize-none focus:outline-none text-sm leading-relaxed"
+                            placeholder="Start writing...
+
+Use [[links]] for backlinks
+Use $...$ for inline math: $E = mc^2$
+Use $$...$$ for block equations"></textarea>
                     </div>
-                    <div id="previewPane" class="flex-1 bg-surface-dark p-6 overflow-y-auto" style="display:none;">
+                    <div id="previewPane" class="flex-1 bg-surface p-8 overflow-y-auto" style="display:none;">
                         <div id="preview" class="prose prose-invert prose-sm max-w-none"></div>
                     </div>
                 </div>
@@ -135,4 +186,5 @@
 
     <script src="assets/app.js"></script>
 </body>
+
 </html>
