@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-dark': '#0a0a0a',
+                        'surface-dark': '#1a1a1a',
+                        'border-dark': '#2a2a2a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .latex-inline, .latex-block { color: #60a5fa; }
+        #editor { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-bg-dark text-gray-100 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-surface-dark border-r border-border-dark flex flex-col">
+            <div class="p-4 border-b border-border-dark">
+                <h1 class="text-xl font-bold">Portfolio CMS</h1>
+                <p class="text-xs text-gray-500 mt-1">Offline Content Manager</p>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2">
+                <button onclick="switchType('projects')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
+                    📁 Projects
+                </button>
+                <button onclick="switchType('garden')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
+                    🌱 Garden Notes
+                </button>
+                <button onclick="switchType('research')" class="w-full text-left px-4 py-2 rounded hover:bg-border-dark transition-colors">
+                    🔬 Research
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t border-border-dark">
+                <button onclick="newContent()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">
+                    + New Content
+                </button>
+            </div>
+        </div>
+
+        <!-- Content List -->
+        <div class="w-80 bg-surface-dark border-r border-border-dark flex flex-col">
+            <div class="p-4 border-b border-border-dark">
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Search..."
+                    onkeyup="searchContent()"
+                    class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                >
+            </div>
+            
+            <div id="contentList" class="flex-1 overflow-y-auto p-2">
+                <!-- Content items will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="flex-1 flex flex-col">
+            <div class="p-4 border-b border-border-dark flex justify-between items-center">
+                <div id="editorTitle" class="text-lg font-semibold">Select or create content</div>
+                <div class="flex gap-2">
+                    <button onclick="saveContent()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors text-sm">
+                        💾 Save
+                    </button>
+                    <button onclick="togglePreview()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors text-sm">
+                        👁 Preview
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 flex">
+                <!-- Metadata Sidebar -->
+                <div id="metadataPanel" class="w-64 bg-surface-dark border-r border-border-dark p-4 space-y-4 overflow-y-auto">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Title</label>
+                        <input type="text" id="titleInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Description</label>
+                        <textarea id="descriptionInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Date</label>
+                        <input type="date" id="dateInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Tags (comma separated)</label>
+                        <input type="text" id="tagsInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                    </div>
+                    <div id="statusField" style="display:none;">
+                        <label class="block text-sm font-medium mb-1">Status</label>
+                        <select id="statusInput" class="w-full bg-bg-dark border border-border-dark rounded px-3 py-2 text-sm">
+                            <option>Active</option>
+                            <option>Completed</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Editor/Preview -->
+                <div class="flex-1 flex">
+                    <div id="editorPane" class="flex-1 flex flex-col">
+                        <textarea 
+                            id="editor" 
+                            class="flex-1 bg-bg-dark p-6 text-sm resize-none focus:outline-none"
+                            placeholder="Start writing... Use [[links]] for backlinks and $...$ for LaTeX"
+                        ></textarea>
+                    </div>
+                    <div id="previewPane" class="flex-1 bg-surface-dark p-6 overflow-y-auto" style="display:none;">
+                        <div id="preview" class="prose prose-invert prose-sm max-w-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>
