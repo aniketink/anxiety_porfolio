@@ -1,67 +1,161 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
-    const gardenEntries = await getCollection("garden");
-    return gardenEntries.map((entry) => ({
-        params: { slug: entry.slug },
-        props: { entry },
-    }));
+  const gardenEntries = await getCollection("garden");
+  return gardenEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"garden">;
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
+
+// Get all notes for "Related Notes" logic
+const allNotes = await getCollection("garden");
+const relatedNotes = allNotes
+  .filter((note) => {
+    return (
+      note.slug !== entry.slug &&
+      note.data.tags?.some((tag: string) => entry.data.tags?.includes(tag))
+    );
+  })
+  .slice(0, 3);
+
+// Calculate Reading Time
+const wordCount = (entry.body || "").split(/\s+/g).length;
+const readingTime = Math.ceil(wordCount / 200);
+
+// GitHub Edit Link
+const githubRepo = "https://github.com/aniketink/anxiety_porfolio"; // Assumed based on path
+const editUrl = `${githubRepo}/blob/main/src/content/garden/${entry.id}`;
 ---
 
 <BaseLayout title={entry.data.title}>
-    <article class="max-w-3xl mx-auto pb-24 animate-fade-in">
-        <!-- Back Button -->
-        <a
-            href="/anxiety_porfolio/garden"
-            class="inline-block mb-10 font-mono text-xs text-secondary hover:text-primary transition-colors"
-        >
-            &larr; BACK TO GARDEN
-        </a>
+  <div class="max-w-6xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-12 pb-24 animate-fade-in">
+    
+    <!-- MAIN CONTENT COLUMN -->
+    <article class="max-w-3xl w-full">
+      <!-- Back Button -->
+      <a
+        href="/anxiety_porfolio/garden"
+        class="inline-block mb-10 font-mono text-xs text-secondary hover:text-primary transition-colors"
+      >
+        &larr; BACK TO GARDEN
+      </a>
 
-        <!-- Header -->
-        <header class="border-b border-border pb-10 mb-16">
-            <div class="flex gap-6 font-mono text-xs text-secondary mb-6">
-                <span>DATE: {entry.data.date}</span>
-                {
-                    entry.data.status && (
-                        <span class="uppercase">
-                            STATUS: {entry.data.status}
-                        </span>
-                    )
-                }
-            </div>
-            <h1
-                class="font-serif text-5xl md:text-6xl leading-none mb-8 text-primary"
-            >
-                {entry.data.title}
-            </h1>
-
-            <p class="text-secondary text-lg mb-8 leading-relaxed">
-                {entry.data.description}
-            </p>
-
-            {
-                entry.data.tags && (
-                    <div class="flex flex-wrap gap-2">
-                        {entry.data.tags.map((tag) => (
-                            <span class="font-mono text-xs uppercase border border-border px-2 py-1 rounded text-secondary">
-                                #{tag}
-                            </span>
-                        ))}
-                    </div>
-                )
-            }
-        </header>
-
-        <!-- The Content -->
-        <div class="prose prose-invert prose-lg max-w-none">
-            <Content />
+      <!-- Header -->
+      <header class="border-b border-border pb-10 mb-12">
+        <div class="flex flex-wrap gap-6 font-mono text-xs text-secondary mb-6 items-center">
+          <span>{entry.data.date}</span>
+          <span class="w-1 h-1 bg-secondary rounded-full"></span>
+          <span>{readingTime} min read</span>
+          {
+            entry.data.status && (
+              <>
+                <span class="w-1 h-1 bg-secondary rounded-full"></span>
+                <span class="uppercase border border-border px-2 py-0.5 rounded-full text-[10px]">
+                  {entry.data.status}
+                </span>
+              </>
+            )
+          }
         </div>
+        <h1 class="font-serif text-4xl md:text-6xl leading-tight mb-8 text-primary">
+          {entry.data.title}
+        </h1>
+
+        <p class="text-secondary text-xl leading-relaxed font-light">
+          {entry.data.description}
+        </p>
+
+        {
+          entry.data.tags && (
+            <div class="flex flex-wrap gap-2 mt-8">
+              {entry.data.tags.map((tag: string) => (
+                <a href={`/anxiety_porfolio/garden?tag=${tag.toLowerCase()}`} class="font-mono text-xs uppercase bg-surface border border-border px-2 py-1 rounded text-secondary hover:border-secondary transition-colors">
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <!-- The Content -->
+      <div class="prose prose-invert prose-lg max-w-none prose-headings:font-serif prose-headings:font-normal prose-a:text-primary prose-a:decoration-secondary/50 hover:prose-a:decoration-primary prose-code:text-accent prose-code:bg-surface prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+        <Content />
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="mt-16 pt-8 border-t border-border flex justify-between items-center">
+        <a 
+          href={editUrl} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="font-mono text-xs text-secondary hover:text-primary flex items-center gap-2 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+          Edit this note on GitHub
+        </a>
+      </div>
+
+      <!-- Related Notes -->
+      {relatedNotes.length > 0 && (
+        <div class="mt-16">
+          <h3 class="font-serif text-2xl mb-6 text-primary">Related Notes</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {relatedNotes.map(note => (
+              <a href={`/anxiety_porfolio/garden/${note.slug}`} class="block p-6 bg-surface border border-border rounded-xl hover:border-secondary transition-colors group">
+                <h4 class="font-serif text-lg mb-2 text-primary group-hover:text-accent transition-colors">{note.data.title}</h4>
+                <p class="text-sm text-secondary line-clamp-2">{note.data.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </article>
+
+    <!-- SIDEBAR (TOC) -->
+    <aside class="hidden lg:block">
+      <div class="sticky top-24">
+        <h4 class="font-mono text-xs uppercase text-secondary mb-4 tracking-wider">Table of Contents</h4>
+        <nav class="flex flex-col gap-2 border-l border-border pl-4">
+          {headings.map((heading: { slug: string; depth: number; text: string }) => (
+            <a
+              href={`#${heading.slug}`}
+              class={`text-sm transition-colors hover:text-primary ${
+                heading.depth === 2 ? "text-secondary" : "text-secondary/60 pl-4"
+              }`}
+            >
+              {heading.text}
+            </a>
+                >
+                    Table of Contents
+                </h4>
+                <nav class="flex flex-col gap-2 border-l border-border pl-4">
+                    {
+                        headings.map((heading) => (
+                            <a
+                                href={`#${heading.slug}`}
+                                class={`text-sm transition-colors hover:text-primary ${
+                                    heading.depth === 2
+                                        ? "text-secondary"
+                                        : "text-secondary/60 pl-4"
+                                }`}
+                            >
+                                {heading.text}
+                            </a>
+                        ))
+                    }
+                </nav>
+            </div>
+        </aside>
+    </div>
 </BaseLayout>
